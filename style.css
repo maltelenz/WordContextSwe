@@ -253,6 +253,18 @@ header h1 {
     box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
 }
 
+#closestWords {
+    margin: 25px 0;
+    text-align: left;
+}
+
+#closestWords h3 {
+    color: #495057;
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+    text-align: center;
+}
+
 @media (max-width: 600px) {
     body {
         padding: 10px;

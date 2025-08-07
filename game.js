@@ -264,8 +264,40 @@ class SwedishWordGame {
     showVictory() {
         document.getElementById('secretWordDisplay').textContent = this.secretWord;
         document.getElementById('finalGuessCount').textContent = this.guesses.length;
+        
+        // Show the 10 closest words
+        this.showClosestWords();
+        
         this.gameEl.style.display = 'none';
         this.victoryEl.style.display = 'block';
+    }
+    
+    showClosestWords() {
+        if (!this.wordSimilarities || this.wordSimilarities.length === 0) return;
+        
+        // Get the 10 most similar nouns (excluding the secret word itself)
+        const closestNouns = this.wordSimilarities
+            .filter(wordData => this.nouns.includes(wordData.word))
+            .slice(0, 10);
+        
+        const closestWordsEl = document.getElementById('closestWords');
+        if (closestWordsEl) {
+            const wordsHTML = closestNouns.map((wordData, index) => {
+                const rank = this.getRankFromSimilarity(wordData.similarity, wordData.word);
+                const scoreColor = this.getScoreColor(wordData.similarity);
+                return `
+                    <div class="guess-item" style="background-color: ${scoreColor}; margin: 2px 0;">
+                        <span class="guess-word">${wordData.word}</span>
+                        <span class="guess-score">${rank}</span>
+                    </div>
+                `;
+            }).join('');
+            
+            closestWordsEl.innerHTML = `
+                <h3>De 10 närmaste orden:</h3>
+                ${wordsHTML}
+            `;
+        }
     }
     
     showMessage(message, type = 'error') {
