@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ordgissning - Swedish Word Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Ordgissning</h1>
+            <p class="subtitle">Gissa det hemliga svenska ordet genom semantisk likhet</p>
+        </header>
+
+        <div class="loading" id="loading">
+            <p>Laddar ordbok och språkmodell...</p>
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+        </div>
+
+        <main class="game" id="game" style="display: none;">
+            <div class="input-section">
+                <div class="guess-input">
+                    <input type="text" id="wordInput" placeholder="Skriv ditt ord här..." autocomplete="off">
+                    <button id="submitBtn">Gissa</button>
+                </div>
+                <div id="messageArea" class="message-area" style="display: none;"></div>
+                <p class="hint">Lägre poäng = närmare det hemliga ordet</p>
+            </div>
+
+            <div class="results-section">
+                <div class="stats">
+                    <span class="stat">Antal gissningar: <span id="guessCount">0</span></span>
+                    <span class="stat">Bästa poäng: <span id="bestScore">-</span></span>
+                </div>
+
+                <div class="guesses-container">
+                    <h3>Dina gissningar</h3>
+                    <div class="guesses-list" id="guessesList">
+                        <p class="no-guesses">Inga gissningar ännu</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <div class="victory" id="victory" style="display: none;">
+            <h2>Grattis! 🎉</h2>
+            <p>Du hittade det hemliga ordet: <span id="secretWordDisplay"></span></p>
+            <p>Antal gissningar: <span id="finalGuessCount"></span></p>
+            <button id="newGameBtn">Nytt spel</button>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
