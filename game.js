@@ -229,8 +229,36 @@ class SwedishWordGame {
     }
     
     getScoreColor(score) {
-        const hue = Math.max(0, (1 - score * 4) * 120);
-        return `hsl(${hue}, 70%, 90%)`;
+        // More forgiving color scheme with linear transition
+        // Score ranges from 0 (best) to ~1 (worst)
+        
+        const normalizedScore = Math.min(1, Math.max(0, score));
+        
+        // Linear mapping to hue: 120 (green) to 0 (red)
+        const hue = Math.max(0, (1 - normalizedScore) * 120);
+        
+        // Vary saturation and lightness for better visual distinction
+        let saturation, lightness;
+        
+        if (normalizedScore < 0.2) {
+            // Very good scores: bright green with high saturation
+            saturation = 80;
+            lightness = 85;
+        } else if (normalizedScore < 0.5) {
+            // Good to medium scores: still quite green/yellow
+            saturation = 75;
+            lightness = 87;
+        } else if (normalizedScore < 0.8) {
+            // Medium to poor scores: orange tones
+            saturation = 70;
+            lightness = 88;
+        } else {
+            // Very poor scores: red but not too dark
+            saturation = 65;
+            lightness = 90;
+        }
+        
+        return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
     }
     
     showVictory() {
