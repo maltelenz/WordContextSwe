@@ -295,14 +295,12 @@ class SwedishWordGame {
     showClosestWords() {
         if (!this.wordSimilarities || this.wordSimilarities.length === 0) return;
         
-        // Get the 10 most similar nouns (excluding the secret word itself)
-        const closestNouns = this.wordSimilarities
-            .filter(wordData => this.nouns.includes(wordData.word))
-            .slice(0, 10);
+        // Get the 10 most similar words (excluding the secret word itself)
+        const closestWords = this.wordSimilarities.slice(0, 10);
         
         const closestWordsEl = document.getElementById('closestWords');
         if (closestWordsEl) {
-            const wordsHTML = closestNouns.map((wordData, index) => {
+            const wordsHTML = closestWords.map((wordData, index) => {
                 const rank = this.getRankFromSimilarity(wordData.similarity, wordData.word);
                 const scoreColor = this.getScoreColor(wordData.similarity);
                 return `
