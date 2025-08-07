@@ -1,4 +1,4 @@
-# Swedish Word Guessing Game (Ordgissning)
+# Ordjakt - Swedish Word Guessing Game
 
 A semantic word guessing game where players try to discover a secret Swedish word by making guesses and receiving similarity-based feedback.
 
