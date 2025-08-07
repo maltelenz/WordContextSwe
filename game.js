@@ -71,12 +71,12 @@ class SwedishWordGame {
     
     async loadNouns() {
         try {
-            const response = await fetch('data/swedish_nouns.json');
+            const response = await fetch('data/swedish_top_1000_nouns.json');
             const nouns = await response.json();
             
             this.nouns = nouns.filter(noun => noun && /^[a-zåäö]+$/i.test(noun));
             
-            console.log(`Loaded ${this.nouns.length} Swedish nouns`);
+            console.log(`Loaded ${this.nouns.length} top Swedish nouns`);
         } catch (error) {
             console.error('Failed to load nouns:', error);
             throw error;
