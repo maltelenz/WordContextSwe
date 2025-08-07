@@ -71,3 +71,4 @@ This filters the 2M+ word embeddings down to only the 50K Swedish words in our v
 - **Code**: MIT License
 - **Swedish word data**: CC-BY-SA 4.0 (OpenSubtitles corpus)
 - **FastText embeddings**: CC-BY-SA 3.0
+- **SALDO lexicon**: CC-BY 3.0 (Språkbanken, University of Gothenburg)
