@@ -229,33 +229,53 @@ class SwedishWordGame {
     }
     
     getScoreColor(score) {
-        // More forgiving color scheme with linear transition
-        // Score ranges from 0 (best) to ~1 (worst)
+        // Absolute color scheme: green (correct) to red (worst possible)
+        // Use the full theoretical range of similarity scores
         
-        const normalizedScore = Math.min(1, Math.max(0, score));
+        if (!this.wordSimilarities || this.wordSimilarities.length === 0) {
+            // Fallback to simple normalization if no similarities calculated
+            const normalizedScore = Math.min(1, Math.max(0, score));
+            const hue = Math.max(0, (1 - normalizedScore) * 120);
+            return `hsl(${hue}, 70%, 85%)`;
+        }
+        
+        // Find the theoretical worst possible score (furthest word from secret)
+        const allScores = this.wordSimilarities.map(w => w.similarity);
+        const bestPossible = 0; // Secret word itself
+        const worstPossible = Math.max(...allScores);
+        
+        // Normalize score within the full theoretical range
+        const normalizedScore = worstPossible > bestPossible 
+            ? (score - bestPossible) / (worstPossible - bestPossible)
+            : 0;
         
         // Linear mapping to hue: 120 (green) to 0 (red)
         const hue = Math.max(0, (1 - normalizedScore) * 120);
         
         // Vary saturation and lightness for better visual distinction
+        // More aggressive red coloring for bad scores
         let saturation, lightness;
         
-        if (normalizedScore < 0.2) {
-            // Very good scores: bright green with high saturation
+        if (normalizedScore < 0.1) {
+            // Excellent scores: bright green with high saturation
+            saturation = 85;
+            lightness = 80;
+        } else if (normalizedScore < 0.3) {
+            // Good scores: green/yellow-green
             saturation = 80;
             lightness = 85;
-        } else if (normalizedScore < 0.5) {
-            // Good to medium scores: still quite green/yellow
+        } else if (normalizedScore < 0.6) {
+            // Medium scores: yellow/orange
             saturation = 75;
             lightness = 87;
         } else if (normalizedScore < 0.8) {
-            // Medium to poor scores: orange tones
-            saturation = 70;
-            lightness = 88;
+            // Poor scores: orange/red-orange - start getting more intense
+            saturation = 80;
+            lightness = 85;
         } else {
-            // Very poor scores: red but not too dark
-            saturation = 65;
-            lightness = 90;
+            // Very poor scores: aggressive red with high saturation and lower lightness
+            saturation = 90;
+            lightness = 75;
         }
         
         return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
