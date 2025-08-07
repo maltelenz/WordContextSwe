@@ -1,6 +1,7 @@
 class SwedishWordGame {
     constructor() {
         this.words = [];
+        this.nouns = [];
         this.embeddings = new Map();
         this.secretWord = '';
         this.guesses = [];
@@ -37,7 +38,10 @@ class SwedishWordGame {
         this.updateProgress(10, 'Laddar ordlista...');
         await this.loadWords();
         
-        this.updateProgress(50, 'Laddar språkmodell...');
+        this.updateProgress(30, 'Laddar ordlista...');
+        await this.loadNouns();
+        
+        this.updateProgress(60, 'Laddar språkmodell...');
         await this.loadEmbeddings();
         
         this.updateProgress(100, 'Klar!');
@@ -65,6 +69,20 @@ class SwedishWordGame {
         }
     }
     
+    async loadNouns() {
+        try {
+            const response = await fetch('data/swedish_nouns.json');
+            const nouns = await response.json();
+            
+            this.nouns = nouns.filter(noun => noun && /^[a-zåäö]+$/i.test(noun));
+            
+            console.log(`Loaded ${this.nouns.length} Swedish nouns`);
+        } catch (error) {
+            console.error('Failed to load nouns:', error);
+            throw error;
+        }
+    }
+    
     async loadEmbeddings() {
         try {
             const response = await fetch('data/swedish_embeddings.json');
@@ -73,10 +91,10 @@ class SwedishWordGame {
                 throw new Error(`HTTP ${response.status}`);
             }
             
-            this.updateProgress(60, 'Laddar språkmodell...');
+            this.updateProgress(70, 'Laddar språkmodell...');
             const embeddings = await response.json();
             
-            this.updateProgress(80, 'Bearbetar språkmodell...');
+            this.updateProgress(90, 'Bearbetar språkmodell...');
             
             // Convert to Map
             for (const [word, vector] of Object.entries(embeddings)) {
@@ -96,7 +114,8 @@ class SwedishWordGame {
     }
     
     startNewGame() {
-        const availableWords = this.words.filter(word => this.embeddings.has(word));
+        // Select from filtered word list
+        const availableWords = this.nouns.filter(word => this.embeddings.has(word));
         this.secretWord = availableWords[Math.floor(Math.random() * availableWords.length)];
         this.guesses = [];
         this.gameWon = false;
