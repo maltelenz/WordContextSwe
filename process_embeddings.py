@@ -23,28 +23,41 @@ def process_embeddings(embeddings_file, swedish_words, output_file):
     
     print("Processing embeddings...")
     
-    with open(embeddings_file, 'r', encoding='utf-8') as f:
+    with open(embeddings_file, 'r', encoding='utf-8', errors='ignore') as f:
         # Skip first line (header)
-        next(f)
+        header = next(f)
+        print(f"Header: {header.strip()}")
         
         for line in f:
             total_lines += 1
             if total_lines % 100000 == 0:
                 print(f"Processed {total_lines} lines, found {len(embeddings)} Swedish words")
             
-            parts = line.strip().split()
-            if len(parts) < 301:  # Word + 300 dimensions
+            parts = line.strip().split(' ')
+            if len(parts) != 301:  # Word + exactly 300 dimensions
+                print(f"Warning: Line {total_lines + 1} has {len(parts)} parts, expected 301")
                 continue
                 
-            word = parts[0].lower()
+            original_word = parts[0]
+            word = original_word.lower()
             
             if word in swedish_words:
-                # Convert vector to list of floats
+                # Convert vector to list of floats - take exactly 300 dimensions
                 try:
                     vector = [float(x) for x in parts[1:301]]
-                    embeddings[word] = vector
-                    processed += 1
-                except ValueError:
+                    if len(vector) == 300:
+                        # Only use if this is the first (or exact case match) we see for this word
+                        if word not in embeddings or original_word.islower():
+                            embeddings[word] = vector
+                            processed += 1
+                            if processed <= 5:  # Debug first few
+                                print(f"Added {word} (from {original_word}): first 3 values = {vector[:3]}")
+                        else:
+                            print(f"Skipping {original_word} -> {word} (already have lowercase version)")
+                    else:
+                        print(f"Warning: {word} vector has {len(vector)} dimensions")
+                except ValueError as e:
+                    print(f"Warning: Could not parse vector for {word}: {e}")
                     continue
     
     print(f"Found embeddings for {len(embeddings)} Swedish words")
