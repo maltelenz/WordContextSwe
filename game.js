@@ -85,7 +85,7 @@ class SwedishWordGame {
     
     async loadEmbeddings() {
         try {
-            const response = await fetch('data/swedish_embeddings.json');
+            const response = await fetch('data/swedish_embeddings_ultra.json');
             
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}`);
@@ -96,9 +96,11 @@ class SwedishWordGame {
             
             this.updateProgress(90, 'Bearbetar språkmodell...');
             
-            // Convert to Map
-            for (const [word, vector] of Object.entries(embeddings)) {
-                this.embeddings.set(word, vector);
+            // Convert to Map and convert integers back to floats
+            for (const [word, intVector] of Object.entries(embeddings)) {
+                // Convert integer array back to float array (divide by 100)
+                const floatVector = intVector.map(v => v / 100.0);
+                this.embeddings.set(word, floatVector);
             }
             
             console.log(`Loaded embeddings for ${this.embeddings.size} words`);
