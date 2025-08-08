@@ -18,7 +18,6 @@ class SwedishWordGame {
         this.submitBtn = document.getElementById('submitBtn');
         this.guessesList = document.getElementById('guessesList');
         this.guessCount = document.getElementById('guessCount');
-        this.bestScore = document.getElementById('bestScore');
         this.progressEl = document.getElementById('progress');
         this.messageArea = document.getElementById('messageArea');
         this.hintBtn = document.getElementById('hintBtn');
@@ -237,10 +236,6 @@ class SwedishWordGame {
         const actualGuesses = this.guesses.filter(g => !g.isHint);
         this.guessCount.textContent = actualGuesses.length;
         
-        // Best score is still the first item (best guess or hint)
-        this.bestScore.textContent = this.guesses.length > 0 ? 
-            this.guesses[0].rank : '-';
-        
         if (this.guesses.length === 0) {
             this.guessesList.innerHTML = '<p class="no-guesses">Inga gissningar ännu</p>';
             return;
@@ -253,7 +248,7 @@ class SwedishWordGame {
             const isHint = guess.isHint;
             const hintBorder = isHint ? 'border: 2px solid #4CAF50;' : '';
             const wordDisplay = isHint ? `💡 ${guess.word}` : guess.word;
-            const rankDisplay = isHint ? 'Ledtråd' : `#${index + 1}`;
+            const rankDisplay = isHint ? 'Ledtråd' : '';
             
             return `
                 <div class="guess-item${highlightClass}" style="background-color: ${scoreColor}; ${hintBorder}">
