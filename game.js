@@ -9,6 +9,7 @@ class SwedishWordGame {
         this.lastGuessWord = null;
         this.wordSimilarities = null;
         this.hintsGiven = [];
+        this.isRandomMode = false;
         
         this.loadingEl = document.getElementById('loading');
         this.gameEl = document.getElementById('game');
@@ -22,6 +23,7 @@ class SwedishWordGame {
         this.messageArea = document.getElementById('messageArea');
         this.hintBtn = document.getElementById('hintBtn');
         this.hintsArea = document.getElementById('hintsArea');
+        this.gameModeEl = document.getElementById('gameMode');
         
         this.init();
     }
@@ -29,7 +31,7 @@ class SwedishWordGame {
     async init() {
         try {
             await this.loadData();
-            this.startNewGame();
+            this.startNewGame(false); // Start with daily word
             this.setupEventListeners();
         } catch (error) {
             console.error('Failed to initialize game:', error);
@@ -118,10 +120,20 @@ class SwedishWordGame {
         this.loadingEl.querySelector('p').textContent = message;
     }
     
-    startNewGame() {
+    startNewGame(useRandom = false) {
         // Select from filtered word list
         const availableWords = this.nouns.filter(word => this.embeddings.has(word));
-        this.secretWord = availableWords[Math.floor(Math.random() * availableWords.length)];
+        
+        this.isRandomMode = useRandom;
+        
+        if (useRandom) {
+            // Random word for replay
+            this.secretWord = availableWords[Math.floor(Math.random() * availableWords.length)];
+        } else {
+            // Daily/hourly word using current date and hour as seed
+            this.secretWord = this.getDailyWord(availableWords);
+        }
+        
         this.guesses = [];
         this.gameWon = false;
         this.lastGuessWord = null;
@@ -141,6 +153,9 @@ class SwedishWordGame {
         this.hintBtn.style.display = 'none';
         this.hintsArea.style.display = 'none';
         this.hintsArea.innerHTML = '';
+        
+        // Update game mode display
+        this.gameModeEl.textContent = this.isRandomMode ? 'Slumpord' : 'Timmens ord';
     }
     
     setupEventListeners() {
@@ -149,7 +164,7 @@ class SwedishWordGame {
             if (e.key === 'Enter') this.makeGuess();
         });
         
-        document.getElementById('newGameBtn').addEventListener('click', () => this.startNewGame());
+        document.getElementById('newGameBtn').addEventListener('click', () => this.startNewGame(true)); // Use random mode for new games
         this.hintBtn.addEventListener('click', () => this.giveHint());
     }
     
@@ -405,6 +420,31 @@ class SwedishWordGame {
         this.messageArea.style.display = 'block';
         
         // No auto-hide for guess messages - they persist until next guess
+    }
+    
+    getDailyWord(availableWords) {
+        // Create a seed based on current date and hour
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = now.getMonth() + 1; // getMonth() returns 0-11
+        const day = now.getDate();
+        const hour = now.getHours();
+        
+        // Create a simple hash from the date/hour
+        const seedString = `${year}-${month}-${day}-${hour}`;
+        let hash = 0;
+        for (let i = 0; i < seedString.length; i++) {
+            const char = seedString.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+            hash = hash & hash; // Convert to 32-bit integer
+        }
+        
+        // Use the hash as seed for word selection
+        const index = Math.abs(hash) % availableWords.length;
+        
+        console.log(`Daily word seed: ${seedString}, hash: ${hash}, index: ${index}`);
+        
+        return availableWords[index];
     }
     
     giveHint() {

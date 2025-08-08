@@ -40,6 +40,13 @@ header h1 {
     opacity: 0.9;
 }
 
+.game-mode {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    margin-top: 5px;
+    font-weight: 500;
+}
+
 .loading {
     padding: 40px;
     text-align: center;
