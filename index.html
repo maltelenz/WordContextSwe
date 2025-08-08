@@ -4,14 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ordjakt - Swedish Word Game</title>
+    <link rel="icon" type="image/svg+xml" href="logo.svg">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Ordjakt</h1>
-            <p class="subtitle">Gissa det hemliga svenska ordet genom semantisk likhet</p>
-            <p class="game-mode" id="gameMode">Timmens ord</p>
+            <div class="logo-container">
+                <img src="logo.svg" alt="Ordjakt Logo" class="logo">
+                <h1>Ordjakt</h1>
+            </div>
         </header>
 
         <div class="loading" id="loading">
@@ -34,6 +36,7 @@
 
             <div class="results-section">
                 <div class="stats">
+                    <span class="stat game-mode-stat" id="gameMode">Timmens ord</span>
                     <span class="stat">Antal gissningar: <span id="guessCount">0</span></span>
                 </div>
 
