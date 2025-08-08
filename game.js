@@ -488,6 +488,9 @@ class SwedishWordGame {
             console.log(`Selected hint: "${bestCandidate.word}" with rank ${bestCandidate.rank}`);
             this.hintsGiven.push(bestCandidate.word);
             this.showHint(bestCandidate.word);
+            
+            // Restore focus to input field
+            this.wordInput.focus();
         } else {
             console.log('No suitable hint found');
         }

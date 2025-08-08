@@ -26,6 +26,7 @@
                 <div class="guess-input">
                     <input type="text" id="wordInput" placeholder="Skriv ditt ord här..." autocomplete="off">
                     <button id="submitBtn">Gissa</button>
+                    <button id="hintBtn" style="display: none;">Ledtråd</button>
                 </div>
                 <div id="messageArea" class="message-area" style="display: none;"></div>
                 <p class="hint">Lägre poäng = närmare det hemliga ordet</p>
@@ -34,7 +35,6 @@
             <div class="results-section">
                 <div class="stats">
                     <span class="stat">Antal gissningar: <span id="guessCount">0</span></span>
-                    <button id="hintBtn" style="display: none;">Få ledtråd</button>
                 </div>
 
                 <div class="guesses-container">
