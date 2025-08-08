@@ -153,6 +153,31 @@ header h1 {
     color: #495057;
 }
 
+#hintBtn {
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #ff7b7b 0%, #ff9a56 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: 600;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#hintBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 123, 123, 0.4);
+}
+
+.hints-area {
+    margin-bottom: 15px;
+}
+
+.hint-item {
+    margin-bottom: 8px;
+}
+
 .guesses-container h3 {
     margin-bottom: 15px;
     color: #495057;

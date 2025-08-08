@@ -8,6 +8,7 @@ class SwedishWordGame {
         this.gameWon = false;
         this.lastGuessWord = null;
         this.wordSimilarities = null;
+        this.hintsGiven = [];
         
         this.loadingEl = document.getElementById('loading');
         this.gameEl = document.getElementById('game');
@@ -19,6 +20,8 @@ class SwedishWordGame {
         this.bestScore = document.getElementById('bestScore');
         this.progressEl = document.getElementById('progress');
         this.messageArea = document.getElementById('messageArea');
+        this.hintBtn = document.getElementById('hintBtn');
+        this.hintsArea = document.getElementById('hintsArea');
         
         this.init();
     }
@@ -122,6 +125,7 @@ class SwedishWordGame {
         this.guesses = [];
         this.gameWon = false;
         this.lastGuessWord = null;
+        this.hintsGiven = [];
         
         // Pre-calculate similarities for ranking
         this.calculateWordSimilarities();
@@ -134,6 +138,9 @@ class SwedishWordGame {
         this.wordInput.value = '';
         this.wordInput.focus();
         this.hideMessage();
+        this.hintBtn.style.display = 'none';
+        this.hintsArea.style.display = 'none';
+        this.hintsArea.innerHTML = '';
     }
     
     setupEventListeners() {
@@ -143,6 +150,7 @@ class SwedishWordGame {
         });
         
         document.getElementById('newGameBtn').addEventListener('click', () => this.startNewGame());
+        this.hintBtn.addEventListener('click', () => this.giveHint());
     }
     
     makeGuess() {
@@ -182,6 +190,11 @@ class SwedishWordGame {
         
         this.wordInput.value = '';
         this.updateDisplay();
+        
+        // Show hint button after first guess
+        if (this.guesses.length === 1) {
+            this.hintBtn.style.display = 'inline-block';
+        }
     }
     
     calculateSimilarity(word1, word2) {
@@ -205,7 +218,11 @@ class SwedishWordGame {
     }
     
     updateDisplay() {
-        this.guessCount.textContent = this.guesses.length;
+        // Count only actual guesses, not hints
+        const actualGuesses = this.guesses.filter(g => !g.isHint);
+        this.guessCount.textContent = actualGuesses.length;
+        
+        // Best score is still the first item (best guess or hint)
         this.bestScore.textContent = this.guesses.length > 0 ? 
             this.guesses[0].rank : '-';
         
@@ -218,11 +235,16 @@ class SwedishWordGame {
             const scoreColor = this.getScoreColor(guess.score);
             const isLastGuess = guess.word === this.lastGuessWord;
             const highlightClass = isLastGuess ? ' last-guess' : '';
+            const isHint = guess.isHint;
+            const hintBorder = isHint ? 'border: 2px solid #4CAF50;' : '';
+            const wordDisplay = isHint ? `💡 ${guess.word}` : guess.word;
+            const rankDisplay = isHint ? 'Ledtråd' : `#${index + 1}`;
+            
             return `
-                <div class="guess-item${highlightClass}" style="background-color: ${scoreColor}">
-                    <span class="guess-word">${guess.word}</span>
+                <div class="guess-item${highlightClass}" style="background-color: ${scoreColor}; ${hintBorder}">
+                    <span class="guess-word">${wordDisplay}</span>
                     <span class="guess-score">${guess.rank}</span>
-                    <span class="guess-rank">#${index + 1}</span>
+                    <span class="guess-rank">${rankDisplay}</span>
                 </div>
             `;
         }).join('');
@@ -383,6 +405,76 @@ class SwedishWordGame {
         this.messageArea.style.display = 'block';
         
         // No auto-hide for guess messages - they persist until next guess
+    }
+    
+    giveHint() {
+        if (this.guesses.length === 0 || this.gameWon) return;
+        
+        const bestGuess = this.guesses[0];
+        const bestRank = bestGuess.rank;
+        
+        // Find a word that ranks roughly halfway between best guess and secret word
+        const targetRank = Math.ceil(bestRank / 2);
+        
+        console.log(`Looking for hint around rank ${targetRank} (between best rank ${bestRank} and secret rank 1)`);
+        
+        // Since wordSimilarities is already sorted by similarity (rank order),
+        // we can directly access the word around the target rank position
+        const targetIndex = Math.min(targetRank - 2, this.wordSimilarities.length - 1); // -2 because ranks start at 1, array at 0, and secret word is rank 1
+        
+        // Look around the target index for an unused word
+        let bestCandidate = null;
+        const searchRadius = 50; // Look within 50 positions of target
+        
+        for (let offset = 0; offset < searchRadius && offset < this.wordSimilarities.length; offset++) {
+            // Check both directions from target
+            for (const direction of [-1, 1]) {
+                const checkIndex = targetIndex + (direction * offset);
+                if (checkIndex < 0 || checkIndex >= this.wordSimilarities.length) continue;
+                
+                const wordData = this.wordSimilarities[checkIndex];
+                const word = wordData.word;
+                
+                // Skip if already guessed or given as hint
+                if (this.guesses.some(g => g.word === word) || 
+                    this.hintsGiven.includes(word)) {
+                    continue;
+                }
+                
+                // Found a good candidate
+                const rank = checkIndex + 2; // +2 because secret is rank 1, and array starts at 0
+                bestCandidate = { word, rank };
+                break;
+            }
+            if (bestCandidate) break;
+        }
+        
+        if (bestCandidate) {
+            console.log(`Selected hint: "${bestCandidate.word}" with rank ${bestCandidate.rank}`);
+            this.hintsGiven.push(bestCandidate.word);
+            this.showHint(bestCandidate.word);
+        } else {
+            console.log('No suitable hint found');
+        }
+    }
+    
+    showHint(hintWord) {
+        const similarity = this.calculateSimilarity(hintWord, this.secretWord);
+        const rank = this.getRankFromSimilarity(similarity, hintWord);
+        
+        // Add hint to guesses array so it appears in ranked order
+        this.guesses.push({ 
+            word: hintWord, 
+            score: similarity, 
+            rank: rank,
+            isHint: true 
+        });
+        
+        // Re-sort guesses by score to maintain ranking
+        this.guesses.sort((a, b) => a.score - b.score);
+        
+        // Update the display to show hints in their proper ranked position
+        this.updateDisplay();
     }
     
     showError(message) {
