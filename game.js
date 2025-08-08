@@ -49,12 +49,8 @@ class SwedishWordGame {
         this.updateProgress(60, 'Laddar språkmodell...');
         await this.loadEmbeddings();
         
-        this.updateProgress(100, 'Klar!');
-        
-        setTimeout(() => {
-            this.loadingEl.style.display = 'none';
-            this.gameEl.style.display = 'block';
-        }, 500);
+        this.loadingEl.style.display = 'none';
+        this.gameEl.style.display = 'block';
     }
     
     async loadWords() {
