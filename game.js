@@ -10,6 +10,7 @@ class SwedishWordGame {
         this.wordSimilarities = null;
         this.hintsGiven = [];
         this.isRandomMode = false;
+        this.playedWords = this.loadPlayedWords();
         
         this.loadingEl = document.getElementById('loading');
         this.gameEl = document.getElementById('game');
@@ -126,11 +127,20 @@ class SwedishWordGame {
         this.isRandomMode = useRandom;
         
         if (useRandom) {
-            // Random word for replay
-            this.secretWord = availableWords[Math.floor(Math.random() * availableWords.length)];
+            // Random word for replay, excluding played words
+            this.secretWord = this.getRandomUnplayedWord(availableWords);
         } else {
             // Daily/hourly word using current date and hour as seed
-            this.secretWord = this.getDailyWord(availableWords);
+            const dailyWord = this.getDailyWord(availableWords);
+            
+            // Check if daily word has already been played
+            if (this.playedWords.includes(dailyWord)) {
+                console.log(`Daily word "${dailyWord}" already played, switching to random mode`);
+                this.isRandomMode = true;
+                this.secretWord = this.getRandomUnplayedWord(availableWords);
+            } else {
+                this.secretWord = dailyWord;
+            }
         }
         
         this.guesses = [];
@@ -316,6 +326,9 @@ class SwedishWordGame {
     }
     
     showVictory() {
+        // Add the completed word to played words
+        this.addPlayedWord(this.secretWord);
+        
         document.getElementById('secretWordDisplay').textContent = this.secretWord;
         document.getElementById('finalGuessCount').textContent = this.guesses.length;
         
@@ -440,6 +453,50 @@ class SwedishWordGame {
         console.log(`Daily word seed: ${seedString}, hash: ${hash}, index: ${index}`);
         
         return availableWords[index];
+    }
+    
+    loadPlayedWords() {
+        try {
+            const stored = localStorage.getItem('ordjakt-played-words');
+            return stored ? JSON.parse(stored) : [];
+        } catch (error) {
+            console.warn('Could not load played words from localStorage:', error);
+            return [];
+        }
+    }
+    
+    savePlayedWords() {
+        try {
+            // Keep only the most recent 100 words
+            const wordsToSave = this.playedWords.slice(-100);
+            localStorage.setItem('ordjakt-played-words', JSON.stringify(wordsToSave));
+            this.playedWords = wordsToSave;
+        } catch (error) {
+            console.warn('Could not save played words to localStorage:', error);
+        }
+    }
+    
+    addPlayedWord(word) {
+        if (!this.playedWords.includes(word)) {
+            this.playedWords.push(word);
+            this.savePlayedWords();
+            console.log(`Added "${word}" to played words. Total played: ${this.playedWords.length}`);
+        }
+    }
+    
+    getRandomUnplayedWord(availableWords) {
+        // Filter out already played words
+        const unplayedWords = availableWords.filter(word => !this.playedWords.includes(word));
+        
+        if (unplayedWords.length === 0) {
+            console.log('All words have been played! Clearing played words history');
+            this.playedWords = [];
+            this.savePlayedWords();
+            return availableWords[Math.floor(Math.random() * availableWords.length)];
+        }
+        
+        console.log(`Selecting from ${unplayedWords.length} unplayed words (${this.playedWords.length} played)`);
+        return unplayedWords[Math.floor(Math.random() * unplayedWords.length)];
     }
     
     giveHint() {
