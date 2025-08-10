@@ -1,5 +1,7 @@
 # Ordjakt - Swedish Word Guessing Game
 
+**🎮 [Play the game online](https://maltelenz.com/WordContextSwe/) 🎮**
+
 A semantic word guessing game where players try to discover a secret Swedish word by making guesses and receiving similarity-based feedback.
 
 ## How to Play
@@ -22,23 +24,11 @@ A semantic word guessing game where players try to discover a secret Swedish wor
 
 ## Getting Started
 
-### Quick Start
-1. Open `index.html` in a modern web browser
-2. Wait for the word database and language model to load (~104MB)
-3. Start guessing Swedish words!
-
 ### Development Server
 For best results, serve the files through a local HTTP server:
 
 ```bash
-# Using Python
 python3 -m http.server 8000
-
-# Using Node.js
-npx serve .
-
-# Using PHP
-php -S localhost:8000
 ```
 
 Then visit `http://localhost:8000`
@@ -47,13 +37,9 @@ Then visit `http://localhost:8000`
 
 ### Architecture
 - **Frontend**: Vanilla HTML, CSS, and JavaScript
-- **Word Data**: 50,000 most common Swedish words (610KB)
-- **Embeddings**: Pre-processed FastText vectors (104MB JSON)
+- **Word Data**: 50,000 most common Swedish words
+- **Embeddings**: Pre-processed FastText vectors
 - **Similarity**: Cosine similarity with rank-based scoring
-
-### Data Sources
-- **Word Frequency**: [OpenSubtitles Swedish corpus](https://github.com/hermitdave/FrequencyWords)
-- **Embeddings**: [FastText Swedish vectors](https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.sv.300.vec.gz)
 
 ## Development
 
@@ -69,6 +55,6 @@ This filters the 2M+ word embeddings down to only the 50K Swedish words in our v
 ## License
 
 - **Code**: MIT License
-- **Swedish word data**: CC-BY-SA 4.0 (OpenSubtitles corpus)
-- **FastText embeddings**: CC-BY-SA 3.0
-- **SALDO lexicon**: CC-BY 3.0 (Språkbanken, University of Gothenburg)
+- **Swedish word data**: CC-BY-SA 4.0 ([OpenSubtitles corpus](https://github.com/hermitdave/FrequencyWords))
+- **FastText embeddings**: CC-BY-SA 3.0 ([FastText Swedish vectors](https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.sv.300.vec.gz))
+- **SALDO lexicon**: CC-BY 3.0 ([Språkbanken, University of Gothenburg](https://spraakbanken.gu.se/en/resources/saldo))
