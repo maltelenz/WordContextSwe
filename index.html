@@ -30,6 +30,7 @@
                     <input type="text" id="wordInput" placeholder="Skriv ditt ord här..." autocomplete="off">
                     <button id="submitBtn">Gissa</button>
                     <button id="hintBtn" style="display: none;">Ledtråd</button>
+                    <button id="giveUpBtn" style="display: none;">Ge upp</button>
                 </div>
                 <div id="messageArea" class="message-area" style="display: none;"></div>
             </div>
@@ -52,7 +53,7 @@
 
         <div class="victory" id="victory" style="display: none;">
             <h2>Grattis! 🎉</h2>
-            <p>Du hittade det hemliga ordet: <span id="secretWordDisplay"></span></p>
+            <p>Det hemliga ordet var: <span id="secretWordDisplay"></span></p>
             <p>Antal gissningar: <span id="finalGuessCount"></span></p>
             <div id="closestWords"></div>
             <button id="newGameBtn">Nytt spel</button>

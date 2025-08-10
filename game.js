@@ -22,6 +22,7 @@ class SwedishWordGame {
         this.progressEl = document.getElementById('progress');
         this.messageArea = document.getElementById('messageArea');
         this.hintBtn = document.getElementById('hintBtn');
+        this.giveUpBtn = document.getElementById('giveUpBtn');
         this.hintsArea = document.getElementById('hintsArea');
         this.gameModeEl = document.getElementById('gameMode');
         
@@ -156,6 +157,7 @@ class SwedishWordGame {
         this.wordInput.focus();
         this.hideMessage();
         this.hintBtn.style.display = 'none';
+        this.giveUpBtn.style.display = 'none';
         this.hintsArea.style.display = 'none';
         this.hintsArea.innerHTML = '';
         
@@ -171,6 +173,7 @@ class SwedishWordGame {
         
         document.getElementById('newGameBtn').addEventListener('click', () => this.startNewGame(true)); // Use random mode for new games
         this.hintBtn.addEventListener('click', () => this.giveHint());
+        this.giveUpBtn.addEventListener('click', () => this.giveUp());
     }
     
     makeGuess() {
@@ -194,6 +197,11 @@ class SwedishWordGame {
         this.hideMessage();
         
         if (word === this.secretWord) {
+            // Add the winning guess to the count
+            const rawScore = this.calculateSimilarity(word, this.secretWord);
+            const rank = 1; // Secret word always has rank 1
+            this.guesses.push({ word, score: rawScore, rank });
+            
             this.gameWon = true;
             this.showVictory();
             return;
@@ -211,9 +219,10 @@ class SwedishWordGame {
         this.wordInput.value = '';
         this.updateDisplay();
         
-        // Show hint button after first guess
+        // Show hint and give up buttons after first guess
         if (this.guesses.length === 1) {
             this.hintBtn.style.display = 'inline-block';
+            this.giveUpBtn.style.display = 'inline-block';
         }
     }
     
@@ -321,12 +330,23 @@ class SwedishWordGame {
         return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
     }
     
-    showVictory() {
+    showVictory(gaveUp = false) {
         // Add the completed word to played words
         this.addPlayedWord(this.secretWord);
         
         document.getElementById('secretWordDisplay').textContent = this.secretWord;
-        document.getElementById('finalGuessCount').textContent = this.guesses.length;
+        
+        // Update the victory message based on whether they gave up or won
+        const victoryTitle = document.querySelector('.victory h2');
+        if (gaveUp) {
+            victoryTitle.textContent = 'Du gav upp! 😔';
+            victoryTitle.style.color = '#dc3545';
+            document.getElementById('finalGuessCount').textContent = `${this.guesses.length} (gav upp)`;
+        } else {
+            victoryTitle.textContent = 'Grattis! 🎉';
+            victoryTitle.style.color = '#28a745';
+            document.getElementById('finalGuessCount').textContent = this.guesses.length;
+        }
         
         // Show the 10 closest words
         this.showClosestWords();
@@ -565,6 +585,19 @@ class SwedishWordGame {
         
         // Update the display to show hints in their proper ranked position
         this.updateDisplay();
+    }
+    
+    giveUp() {
+        if (this.gameWon) return;
+        
+        // Show confirmation dialog
+        const confirmed = confirm('Är du säker på att du vill ge upp och se det hemliga ordet?');
+        
+        if (confirmed) {
+            // Mark as given up and show victory screen
+            this.gameWon = true;
+            this.showVictory(true); // Pass true to indicate this was a give up
+        }
     }
     
     showError(message) {
