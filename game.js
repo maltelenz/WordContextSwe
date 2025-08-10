@@ -160,6 +160,7 @@ class SwedishWordGame {
         this.giveUpBtn.style.display = 'none';
         this.hintsArea.style.display = 'none';
         this.hintsArea.innerHTML = '';
+        this.guessesList.style.display = 'none';
         
         // Update game mode display
         this.gameModeEl.textContent = this.isRandomMode ? 'Slumpord' : 'Timmens ord';
@@ -223,6 +224,7 @@ class SwedishWordGame {
         if (this.guesses.length === 1) {
             this.hintBtn.style.display = 'block';
             this.giveUpBtn.style.display = 'block';
+            this.guessesList.style.display = 'block';
         }
     }
     
