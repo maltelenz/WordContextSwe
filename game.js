@@ -72,7 +72,7 @@ class SwedishWordGame {
     
     async loadNouns() {
         try {
-            const response = await fetch('data/swedish_top_1000_nouns.json');
+            const response = await fetch('data/swedish_top_1500_nouns.json');
             const nouns = await response.json();
             
             this.nouns = nouns.filter(noun => noun && /^[a-zåäö]+$/i.test(noun));
