@@ -44,10 +44,10 @@ Then visit `http://localhost:8000`
 ## Development
 
 ### Data Processing
-The `process_embeddings.py` script converts the raw FastText vectors into a optimized JSON format:
+The `scripts/process_embeddings.py` script converts the raw FastText vectors into a optimized JSON format:
 
 ```bash
-python3 process_embeddings.py
+python3 scripts/process_embeddings.py
 ```
 
 This filters the 2M+ word embeddings down to only the 50K Swedish words in our vocabulary.
