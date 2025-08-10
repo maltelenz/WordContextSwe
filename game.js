@@ -417,7 +417,6 @@ class SwedishWordGame {
             <div class="guess-item" style="background-color: ${scoreColor}; margin: 0; border: none;">
                 <span class="guess-word">${word}</span>
                 <span class="guess-score">${rank}</span>
-                <span class="guess-rank">#${guessRank}</span>
             </div>
         `;
         this.messageArea.className = 'message-area success';

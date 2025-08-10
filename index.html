@@ -2,7 +2,7 @@
 <html lang="sv">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
     <title>Ordjakt - Swedish Word Game</title>
     <link rel="icon" type="image/svg+xml" href="logo.svg">
     <link rel="stylesheet" href="style.css">
@@ -14,6 +14,7 @@
                 <img src="logo.svg" alt="Ordjakt Logo" class="logo">
                 <h1>Ordjakt</h1>
             </div>
+            <span class="game-mode-header" id="gameMode">Timmens ord</span>
         </header>
 
         <div class="loading" id="loading">
@@ -31,12 +32,10 @@
                     <button id="hintBtn" style="display: none;">Ledtråd</button>
                 </div>
                 <div id="messageArea" class="message-area" style="display: none;"></div>
-                <p class="hint">Lägre poäng = närmare det hemliga ordet</p>
             </div>
 
             <div class="results-section">
                 <div class="stats">
-                    <span class="stat game-mode-stat" id="gameMode">Timmens ord</span>
                     <span class="stat">Antal gissningar: <span id="guessCount">0</span></span>
                 </div>
 
@@ -46,6 +45,7 @@
                     <div class="guesses-list" id="guessesList">
                         <p class="no-guesses">Inga gissningar ännu</p>
                     </div>
+                    <p class="hint">Lägre poäng = närmare det hemliga ordet</p>
                 </div>
             </div>
         </main>
