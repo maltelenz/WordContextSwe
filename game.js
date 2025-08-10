@@ -221,8 +221,8 @@ class SwedishWordGame {
         
         // Show hint and give up buttons after first guess
         if (this.guesses.length === 1) {
-            this.hintBtn.style.display = 'inline-block';
-            this.giveUpBtn.style.display = 'inline-block';
+            this.hintBtn.style.display = 'block';
+            this.giveUpBtn.style.display = 'block';
         }
     }
     

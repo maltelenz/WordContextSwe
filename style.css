@@ -130,6 +130,11 @@ header h1 {
     margin-bottom: 8px;
 }
 
+.button-row {
+    display: flex;
+    gap: 10px;
+}
+
 #wordInput {
     flex: 1;
     padding: 10px 15px;
@@ -432,10 +437,16 @@ footer {
     }
     
     #submitBtn, #hintBtn, #giveUpBtn {
-        padding: 12px 20px;
-        font-size: 1rem;
+        padding: 8px 12px;
+        font-size: 0.9rem;
+        min-height: 52px;
+        flex: 1;
+    }
+    
+    .guess-input .button-row {
+        display: flex;
+        gap: 8px;
         width: 100%;
-        min-height: 48px;
     }
     
     .stats {
@@ -524,6 +535,15 @@ footer {
     }
     
     #submitBtn, #hintBtn, #giveUpBtn {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+        min-height: 52px;
+        flex: 1;
+    }
+    
+    .guess-input .button-row {
+        display: flex;
+        gap: 8px;
         width: 100%;
     }
     
