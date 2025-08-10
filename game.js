@@ -25,6 +25,8 @@ class SwedishWordGame {
         this.giveUpBtn = document.getElementById('giveUpBtn');
         this.hintsArea = document.getElementById('hintsArea');
         this.gameModeEl = document.getElementById('gameMode');
+        this.helpLink = document.getElementById('helpLink');
+        this.helpSection = document.getElementById('helpSection');
         
         this.init();
     }
@@ -175,6 +177,10 @@ class SwedishWordGame {
         document.getElementById('newGameBtn').addEventListener('click', () => this.startNewGame(true)); // Use random mode for new games
         this.hintBtn.addEventListener('click', () => this.giveHint());
         this.giveUpBtn.addEventListener('click', () => this.giveUp());
+        this.helpLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.toggleHelp();
+        });
     }
     
     makeGuess() {
@@ -599,6 +605,16 @@ class SwedishWordGame {
             // Mark as given up and show victory screen
             this.gameWon = true;
             this.showVictory(true); // Pass true to indicate this was a give up
+        }
+    }
+    
+    toggleHelp() {
+        if (this.helpSection.style.display === 'none') {
+            this.helpSection.style.display = 'block';
+            this.helpLink.textContent = 'Stäng hjälp';
+        } else {
+            this.helpSection.style.display = 'none';
+            this.helpLink.textContent = 'Hjälp';
         }
     }
     
