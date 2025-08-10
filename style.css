@@ -233,6 +233,7 @@ header h1 {
     background-color: #fee;
     color: #c33;
     border: 1px solid #fcc;
+    padding: 10px 15px;
 }
 
 
@@ -338,8 +339,15 @@ header h1 {
     transition: background-color 0.3s ease;
 }
 
+.guess-item:first-child {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
 .guess-item:last-child {
     border-bottom: none;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
 }
 
 .guess-item:hover {
